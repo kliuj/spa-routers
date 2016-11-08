@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>test hash route</title>
+  <script type="text/javascript" src="route.js"></script>
+
+  <style type="text/css">
+    body {
+      font: 10.5pt arial;
+      color: #4d4d4d;
+      line-height: 150%;
+      width: 90%;
+    }
+    a {
+      font-size: 16px;padding: 10px
+    }
+    #content{
+      font-size:20px;font-weight:bold;padding: 20px
+    }
+  </style>
+</head>
+<body>
+  <a href="#/index?index=1">异步加载首页</a>
+  <a href="#/list?list=1">异步加载列表页</a>
+  <a href="#/detail?detail=1">异步加载详情页</a>
+  <a href="#/detail2?detail=2">异步加载详情页</a>
+  <div id="content">
+    <p style="color:#333">默认首页内容</p>
+  </div>
+  <script type="text/javascript" >
+   	spaRouters.map('/index',function(transition){
+      spaRouters.resolve('js/index.js',transition)
+  	})
+  	spaRouters.map('/list',function(transition){
+      spaRouters.resolve('js/list.js',transition)
+  	})
+  	spaRouters.map('/detail',function(transition){
+      spaRouters.resolve('js/detail.js',transition)
+  	})
+  	spaRouters.map('/detail2',function(transition){
+      document.getElementById("content").innerHTML = '<p style="color:#DD8C6F;">当前同步渲染详情页' + JSON.stringify(transition) +'</p>'
+    })
+    spaRouters.beforeEach(function(transition){
+      console.log('切换之前dosomething')
+      setTimeout(function(){
+        //模拟切换之前延迟，比如说做个异步登录信息验证
+         transition.next()
+      },100)
+    })
+    spaRouters.afterEach(function(transition){
+      console.log("切换之后dosomething")
+    })
+    spaRouters.init()
+  </script>
+</body>
+</html>
