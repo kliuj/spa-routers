@@ -1,13 +1,14 @@
 /*
 *author:https://github.com/kliuj
 **使用方法
-*		注册路由 : spaRouters.map('/name',function(){
+*		1：注册路由 : spaRouters.map('/name',function(transition){
 						//异步加载js 
-						spaRouters.resolve('name.js',transition)
-						//或者同步执行
-						dosomething()
+						spaRouters.asyncFun('name.js',transition)
+						//或者同步执行回调
+						spaRouters.syncFun(function(transition){},transition)
 					})
-		初始化      spaRouters.init()			
+		2：初始化      spaRouters.init()
+		3：跳转  href = '#/name'			
 */
 (function() {
 	var util = {
@@ -59,8 +60,7 @@
 					}
 				})
 			}else{
-				self.afterFun && self.afterFun.call(this,currentHash)
-				self.routers[currentHash.path].callback(currentHash)
+				self.routers[currentHash.path].callback.call(self,currentHash)
 			}
 		},
 		//路由处理
@@ -102,10 +102,10 @@
 			}
 		},
 		//路由异步懒加载js文件
-		resolve:function(file,transition){
+		asyncFun:function(file,transition){
 		   var self = this;
 		   if(self.routers[transition.path].fn){
-		   		self.afterFun && self.afterFun.call(self,transition) 	
+		   		self.afterFun && self.afterFun(transition) 	
 		   		self.routers[transition.path].fn(transition)
 		   }else{
 		   	   console.log("开始异步下载js文件"+file)
@@ -117,14 +117,19 @@
 	           SPA_RESOLVE_INIT = null;
 	           scriptEle.onload= function(){ 
 	               console.log('下载'+file+'完成')
-	               self.afterFun && self.afterFun.call(self,transition)
+	               self.afterFun && self.afterFun(transition) 	
 	               self.routers[transition.path].fn = SPA_RESOLVE_INIT;
 	               self.routers[transition.path].fn(transition)
 	           } 
 	           _body.appendChild(scriptEle); 		
-		   }	
-		       
+		   }	    
+		},
+		//同步操作
+		syncFun:function(callback,transition){
+			this.afterFun && this.afterFun(transition)
+			callback &&　callback(transition)
 		}
+
 	}
 	//注册到window全局
 	window.spaRouters = new spaRouters();
