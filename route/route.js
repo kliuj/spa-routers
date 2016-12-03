@@ -1,14 +1,14 @@
-/*
+﻿/*
 *author:https://github.com/kliuj
 **使用方法
 *		1：注册路由 : spaRouters.map('/name',function(transition){
-						//异步加载js 
+						//异步加载js
 						spaRouters.asyncFun('name.js',transition)
 						//或者同步执行回调
 						spaRouters.syncFun(function(transition){},transition)
 					})
 		2：初始化      spaRouters.init()
-		3：跳转  href = '#/name'			
+		3：跳转  href = '#/name'
 */
 (function() {
 	var util = {
@@ -21,7 +21,7 @@
 			for(var i = 0;i<params.length ; i++){
 				var item = params[i].split("=");
 				query[item[0]] = item[1]
-			}		
+			}
 			return 	{
 				path:hashName,
 				query:query
@@ -49,7 +49,7 @@
 		},
 		refresh:function(currentHash){
 			var self = this;
-			if(self.beforeFun){	
+			if(self.beforeFun){
 				self.beforeFun({
 					to:{
 						path:currentHash.path,
@@ -80,7 +80,7 @@
 				this.routers[path] ={
 					callback:callback,//回调
 					fn:null //存储异步文件状态
-				} 
+				}
 			}else{
 				console.trace('注册'+path+'地址需要提供正确的的注册回调')
 			}
@@ -105,24 +105,24 @@
 		asyncFun:function(file,transition){
 		   var self = this;
 		   if(self.routers[transition.path].fn){
-		   		self.afterFun && self.afterFun(transition) 	
+		   		self.afterFun && self.afterFun(transition)
 		   		self.routers[transition.path].fn(transition)
 		   }else{
 		   	   console.log("开始异步下载js文件"+file)
-			   var _body= document.getElementsByTagName('body')[0]; 
-	           var scriptEle= document.createElement('script'); 
-	           scriptEle.type= 'text/javascript'; 
-	           scriptEle.src= file; 
+			   var _body= document.getElementsByTagName('body')[0];
+	           var scriptEle= document.createElement('script');
+	           scriptEle.type= 'text/javascript';
+	           scriptEle.src= file;
 	           scriptEle.async = true;
 	           SPA_RESOLVE_INIT = null;
-	           scriptEle.onload= function(){ 
+	           scriptEle.onload= function(){
 	               console.log('下载'+file+'完成')
-	               self.afterFun && self.afterFun(transition) 	
+	               self.afterFun && self.afterFun(transition)
 	               self.routers[transition.path].fn = SPA_RESOLVE_INIT;
 	               self.routers[transition.path].fn(transition)
-	           } 
-	           _body.appendChild(scriptEle); 		
-		   }	    
+	           }
+	           _body.appendChild(scriptEle);
+		   }
 		},
 		//同步操作
 		syncFun:function(callback,transition){
