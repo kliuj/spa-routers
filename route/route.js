@@ -127,7 +127,7 @@
 		//同步操作
 		syncFun:function(callback,transition){
 			this.afterFun && this.afterFun(transition)
-			callback &&　callback(transition)
+			callback && callback(transition)
 		}
 
 	}
